@@ -10,17 +10,10 @@ import { Document } from "@llamaindex/core/schema";
 import { Observable, range } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
-
 interface Message {
-
   content: string;
-
   speaker: "User" | "Assistant";
-
 }
- 
-  
-
 
 @Component({
   selector: 'app-root',
@@ -54,10 +47,7 @@ export class AppComponent {
       name: "boardgame_rules",
     });
 
-    console.log({items: await this.collection.count()})
-
-//    const ruleBooks = ['wm_rulebook_v29', 'Inventions Rules Public', 'Kanban_EV_Rules_v0.99', 'Lisboa_rulebook_final', 'On_Mars_-_English_Rulebook_FINAL', 'Speakeasy Rules v16'];
-//const ruleBooks = [];
+    //const ruleBooks = ['wm_rulebook_v29', 'Inventions Rules Public', 'Kanban_EV_Rules_v0.99', 'Lisboa_rulebook_final', 'On_Mars_-_English_Rulebook_FINAL', 'Speakeasy Rules v16'];
     const ruleBooks = ['On_Mars_-_English_Rulebook_FINAL', 'wm_rulebook_v29'];
 
     const collectionPromises = [].map(ruleBook => {
@@ -69,8 +59,6 @@ export class AppComponent {
           const ids = nodes.map(node => node.id_);
           const metadatas = nodes.map(_ => ({ ruleBook}));
 
-          console.log({chunks, ids, metadatas})
-
           return this.collection!.add({
             documents: chunks,
             ids: ids,
@@ -79,24 +67,20 @@ export class AppComponent {
         });      
     });   
 
-    await Promise.all(collectionPromises);   
-    
+    await Promise.all(collectionPromises);       
   }
 
   async chat() {
-
     this.messages.push({ content: this.prompt, speaker: "User" });
 
     (await this.callApi(this.prompt)).subscribe(response => {
-
       this.messages.push({ content: (response as any).answer, speaker: "Assistant" });
-    });    
-
+    });
+    
+    this.prompt = '';
   }
 
   async callApi(prompt: string): Promise<Observable<Object>> {
-    
-    // const prompt = "Which game features the professor LATIV?";
 
     const results = await this.collection!.query({
       queryTexts: prompt, // Chroma will embed this for you
@@ -107,17 +91,11 @@ export class AppComponent {
 
     results.documents.map(d => ({ content: d}))
 
-    console.log({items: await this.collection!.count()})
-
-    // const params = [results.documents.map(d => ({content: d})), results.metadatas.map(m => ({ruleBook: m, url: `http://localhost:4200/Rulebooks/${m}.md`}))]
-
     let params: any[] = []
-    console.log({documents: results.documents})
     results.documents[0].forEach((document,index): void => {
       const ruleBook = results.metadatas[0][index]!['ruleBook'];
       params[index] = { content: document, ruleBook, url: `http://localhost:4200/Rulebooks/${ruleBook}.md` }
     })
-    console.log({params})
 
     return this.httpClient.post(`https://localhost:44310/assistant/${prompt}`, params);
   }

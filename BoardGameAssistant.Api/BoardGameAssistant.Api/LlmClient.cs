@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.PromptTemplates.Handlebars;
@@ -51,7 +52,7 @@ public class LlmClient
 
         _history.AddAssistantMessage(answer);
         
-        return answer;
+        return JsonSerializer.Serialize(new { answer });
     }
 
     private string CreateStringRepresentation(DocumentChunk[] documents)

@@ -26,7 +26,22 @@ builder.Services.AddSingleton(services =>
     return new LlmClient(kernel);
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "MyAllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("*", "http://example.com",
+                "http://www.contoso.com");
+        });
+});
+
+
+
+
 var app = builder.Build();
+
+app.UseCors("MyAllowSpecificOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

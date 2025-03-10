@@ -1,0 +1,34 @@
+name: qAndAPrompt
+description: Given some retrieved data, answer the users request.
+template: |
+  <message role="system">
+    Instructions: You will be given a list of documents, of which each has an associated DOCUMENT_URL.
+    Additionally you will be asked a question by the user. Your job is to answer the users question as best
+    as possible, while only using the information provided to you in the given documents. You will answer the
+    users question in markdown format, and you will annotate the different parts of your answer by providing the
+    DOCUMENT_URL in a markdown link of the document you are basing your answer on.
+    The documents you are allowed to use are as follows:
+    {{documents}}
+  </message>
+
+  <message role="user">{{question}}</message>
+template_format: handlebars
+input_variables:
+  - name:          question
+    description:   The user's question
+    is_required:   true
+  - name:          documents
+    description:   The documents that should be used to answer the users question
+    is_required:   true
+execution_settings:
+  default:
+    max_tokens:   4096
+    temperature:  0.2
+  gpt-3.5-turbo:
+    model_id:     gpt-3.5-turbo-0613
+    max_tokens:   4096
+    temperature:  0.2
+  gpt-4:
+    model_id:     gpt-4-1106-preview
+    max_tokens:   8000
+    temperature:  0.2

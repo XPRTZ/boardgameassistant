@@ -1,0 +1,6 @@
+@BoardGameAssistant.Api_HostAddress = http://localhost:5150
+
+GET {{BoardGameAssistant.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

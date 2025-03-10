@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+        <UserSecretsId>25626e7f-9c3c-4074-818e-0c944b5f8aa6</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Prompts\qAndA.prompt.yaml" />
+	  <None Update="Evaluation\evaluation-data.jsonl">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Prompts\qAndA.prompt.yaml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.Search.Documents" Version="11.7.0-beta.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.36.1" />
+		<PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.36.1" />
+		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.36.1" />
+	</ItemGroup>
+
+</Project>

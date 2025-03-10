@@ -3,17 +3,16 @@ using System.Text;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.PromptTemplates.Handlebars;
-using OpenAI.Chat;
 
 namespace BoardGameAssistant.Api;
 
-public class RAGClient
+public class LlmClient
 {
     private readonly ChatHistory _history;
     private readonly Kernel _kernel;
     private readonly KernelFunction _qAndAPrompt;
 
-    public RAGClient(Kernel kernel)
+    public LlmClient(Kernel kernel)
     {
         _history = [];
         _kernel = kernel;
@@ -35,7 +34,7 @@ public class RAGClient
         _history.AddUserMessage(message);
     }
 
-    public async Task<string> CreateResponseAsync(string[] documents)
+    public async Task<string> CreateResponseAsync(DocumentChunk[] documents)
     {
         var userMessage = _history.LastOrDefault(m => m.Role == AuthorRole.User);
         if (userMessage == null || _history.Last() != userMessage)
@@ -55,25 +54,19 @@ public class RAGClient
         return answer;
     }
 
-    private string GetDocument()
-    {
-        var stream = Assembly
-            .GetExecutingAssembly()
-            .GetManifestResourceStream("BoardGameAssistant.Api.TestDocuments.Lisboa_rulebook_final.md")!;
-        
-        using StreamReader reader = new(stream);
-        
-        return reader.ReadToEnd();
-    }
-
-    private string CreateStringRepresentation(string[] documents)
+    private string CreateStringRepresentation(DocumentChunk[] documents)
     {
         var sb = new StringBuilder();
         foreach (var document in documents)
         {
             var tempResult = $"""
                              # DOCUMENT
-                             {document}
+                             ## DOCUMENT_TITLE
+                             {document.RuleBook}
+                             ## DOCUMENT_URL
+                             {document.Url}
+                             ## DOCUMENT_TEXT
+                             {document.Content}
                              ----------------------------------------------------------
 
                              """;

@@ -1,4 +1,3 @@
-using System.Reflection;
 using BoardGameAssistant.Api;
 using Microsoft.SemanticKernel;
 
@@ -24,7 +23,7 @@ builder.Services.AddSingleton(services =>
 builder.Services.AddSingleton(services =>
 {
     var kernel = services.GetRequiredService<Kernel>();
-    return new RAGClient(kernel);
+    return new LlmClient(kernel);
 });
 
 var app = builder.Build();
@@ -38,19 +37,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/assistant", async (string prompt, RAGClient client) =>
+app.MapPost("/assistant/{prompt}", async (string prompt, DocumentChunk[] chunks, LlmClient client) =>
     {
         client.AddUserMessage(prompt);
         
-        var stream = Assembly
-            .GetExecutingAssembly()
-            .GetManifestResourceStream("BoardGameAssistant.Api.TestDocuments.Lisboa_rulebook_final.md")!;
-        
-        using StreamReader reader = new(stream);
-        
-        var document = reader.ReadToEnd();
-        
-        return await client.CreateResponseAsync( [document]);
+        return await client.CreateResponseAsync(chunks);
     })
     .WithName("BoardGame Assistant API")
     .WithOpenApi();

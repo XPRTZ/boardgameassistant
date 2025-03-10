@@ -1,0 +1,1 @@
+public record DocumentChunk(string Content, string RuleBook, string Url);

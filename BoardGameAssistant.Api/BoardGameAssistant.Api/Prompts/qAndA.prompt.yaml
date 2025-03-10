@@ -2,7 +2,7 @@ name: qAndAPrompt
 description: Given some retrieved data, answer the users request.
 template: |
   <message role="system">
-    Instructions: You will be given a list of documents, of which each has an associated DOCUMENT_URL.
+    Instructions: You will be given a list of documents, of which each has an associated DOCUMENT_TITLE.
     Additionally you will be asked a question by the user. Your job is to answer the users question as best
     as possible, while only using the information provided to you in the given documents. You will answer the
     users question in markdown format, and you will annotate the different parts of your answer by providing the
